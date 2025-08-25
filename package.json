@@ -18,5 +18,10 @@
   },
   "dependencies": {
     "typescript": "^5.9.2"
-  }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
 }
