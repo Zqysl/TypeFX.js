@@ -1,0 +1,22 @@
+{
+  "name": "typefxjs",
+  "version": "0.0.1",
+  "description": "",
+  "license": "ISC",
+  "author": "Qingyu Zhang",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "typescript": "^5.9.2"
+  }
+}
