@@ -187,6 +187,51 @@ export default class TypeFX {
 
   }
 
+  /** Quick move caret n characters */
+  quickMove(n: number): this {
+    if (n < 0) {
+      return this.enqueue(async () => {
+        this.caret.classList.remove('typefx-caret-blink');
+
+        let prev: HTMLElement | null = this.caret;
+        let last: HTMLElement | null = prev;
+
+        while (n++ < 0) {
+          last = prev;
+          prev = prev.previousSibling as ChildNode as HTMLElement | null;
+          if (!prev) break;
+        }
+
+        this.el.insertBefore(this.caret, last);
+
+        this.caret.classList.add('typefx-caret-blink');
+
+        await sleep(this.getSpeedDelay());
+      });
+    } else {
+      return this.enqueue(async () => {
+        this.caret.classList.remove('typefx-caret-blink');
+
+        let next: HTMLElement | null = this.caret;
+        let last: HTMLElement | null = next;
+        
+        while (n-- > 0) {
+          last = next;
+          next = next.nextSibling as ChildNode as HTMLElement | null;
+          if (!next) break;
+        }
+
+        this.el.insertBefore(this.caret, last.nextSibling);
+
+        this.caret.classList.add('typefx-caret-blink');
+
+
+        await sleep(this.getSpeedDelay());
+      });
+    }
+
+  }
+
   /** Select n characters */
   select(n: number): this {
     if (n < 0) {
