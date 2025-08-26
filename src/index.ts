@@ -13,12 +13,12 @@ const TYPEFX_STYLE_ID = 'typefx-style';
 function getCaretStyle(width = '0.05em'): string {
   return `
     .typefx-caret){
-      position:absolute;
-      display:inline-block;
+      position: absolute;
+      display: inline-block;
       overflow: visible;
+      width: 0;
     }
     .typefx-caret::after {
-      width: 1em;
       height: 1em;
       border-left: ${width} solid currentColor;
       
@@ -137,6 +137,38 @@ export default class TypeFX {
       }
       this.caret.classList.add('typefx-caret-blink');
     });
+  }
+
+  /** Move caret n characters */
+  move(n: number): this {
+    if (n < 0) {
+      return this.enqueue(async () => {
+        this.caret.classList.remove('typefx-caret-blink');
+        while (n++ < 0) {
+          if (this.aborted) break;
+          // Find the last node before the caret
+          const prev = this.caret.previousSibling as ChildNode | null;
+          if (!prev) break;
+          this.el.insertBefore(this.caret, prev);
+          await sleep(this.getSpeedDelay());
+        }
+        this.caret.classList.add('typefx-caret-blink');
+      });
+    } else {
+      return this.enqueue(async () => {
+        this.caret.classList.remove('typefx-caret-blink');
+        while (n-- > 0) {
+          if (this.aborted) break;
+          // Find the last node before the caret
+          const next = this.caret.nextSibling as ChildNode | null;
+          if (!next) break;
+          this.el.insertBefore(this.caret, next.nextSibling);
+          await sleep(this.getSpeedDelay());
+        }
+        this.caret.classList.add('typefx-caret-blink');
+      });
+    }
+
   }
 
   /** Clear content */
