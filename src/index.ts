@@ -162,7 +162,7 @@ export default class TypeFX {
         this.caret.classList.remove('typefx-caret-blink');
         while (n-- > 0) {
           if (this.aborted) break;
-          // Find the last node before the caret
+
           const next = this.caret.nextSibling as ChildNode | null;
           if (!next) break;
           this.el.insertBefore(this.caret, next.nextSibling);
@@ -195,7 +195,7 @@ export default class TypeFX {
         this.caret.classList.remove('typefx-caret-blink');
         while (n-- > 0) {
           if (this.aborted) break;
-          // Find the last node before the caret
+
           const next = this.caret.nextSibling as ChildNode as Element | null;
           if (!next) break;
           this.el.insertBefore(this.caret, next.nextSibling);
@@ -206,6 +206,53 @@ export default class TypeFX {
       });
     }
 
+
+  }
+
+
+  /** Quick select n characters */
+  quickSelect(n: number): this {
+    if (n < 0) {
+      return this.enqueue(async () => {
+        this.caret.classList.remove('typefx-caret-blink');
+        let charEl: Element | null = this.caret.previousSibling as ChildNode as Element | null;
+        if (!charEl) return;
+
+        while (n++ < 0) {
+          if (this.aborted) break;
+          // Find the last node before the caret
+          charEl.classList.add("typefx-selected")
+          charEl = charEl.previousSibling as ChildNode as Element | null;
+          if (!charEl) break;
+
+        }
+
+        this.el.insertBefore(this.caret, charEl);
+        await sleep(this.getSpeedDelay());
+
+        this.caret.classList.add('typefx-caret-blink');
+      });
+    } else {
+      return this.enqueue(async () => {
+        this.caret.classList.remove('typefx-caret-blink');
+        let charEl: Element | null = this.caret.nextSibling as ChildNode as Element | null;
+        if (!charEl) return;
+
+        while (n-- > 0) {
+          if (this.aborted) break;
+
+          charEl.classList.add("typefx-selected")
+          charEl = charEl.nextSibling as ChildNode as Element | null;
+          if (!charEl) break;
+
+        }
+
+        this.el.insertBefore(this.caret, charEl);
+        await sleep(this.getSpeedDelay());
+
+        this.caret.classList.add('typefx-caret-blink');
+      });
+    }
 
   }
 
