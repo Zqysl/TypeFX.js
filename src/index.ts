@@ -12,14 +12,14 @@ const TYPEFX_STYLE_ID = 'typefx-style';
 
 function getCaretStyle(width = '0.05em'): string {
   return `
-    .typefx-caret){
+    .typefx-caret{
       position: absolute;
       display: inline-block;
       overflow: visible;
-      width: 0;
+      width: 0px;
     }
     .typefx-caret::after {
-      height: 1em;
+      width: 0px;
       border-left: ${width} solid currentColor;
       
       overflow: visible;
@@ -28,6 +28,9 @@ function getCaretStyle(width = '0.05em'): string {
     }
     .typefx-caret.typefx-caret-blink {
       animation: typefx-caret-blink 0.9s steps(1, end) infinite;
+    }
+    .typefx-selected {
+      background-color: #00000044;
     }
     @keyframes typefx-caret-blink { 0%, 49% {opacity: 1;} 50%, 100% { opacity: 0; } }
 `
@@ -168,6 +171,41 @@ export default class TypeFX {
         this.caret.classList.add('typefx-caret-blink');
       });
     }
+
+  }
+
+  /** Select n characters */
+  select(n: number): this {
+    if (n < 0) {
+      return this.enqueue(async () => {
+        this.caret.classList.remove('typefx-caret-blink');
+        while (n++ < 0) {
+          if (this.aborted) break;
+          // Find the last node before the caret
+          const prev = this.caret.previousSibling as ChildNode as Element | null;
+          if (!prev) break;
+          this.el.insertBefore(this.caret, prev);
+          prev.classList.add("typefx-selected")
+          await sleep(this.getSpeedDelay());
+        }
+        this.caret.classList.add('typefx-caret-blink');
+      });
+    } else {
+      return this.enqueue(async () => {
+        this.caret.classList.remove('typefx-caret-blink');
+        while (n-- > 0) {
+          if (this.aborted) break;
+          // Find the last node before the caret
+          const next = this.caret.nextSibling as ChildNode as Element | null;
+          if (!next) break;
+          this.el.insertBefore(this.caret, next.nextSibling);
+          next.classList.add("typefx-selected")
+          await sleep(this.getSpeedDelay());
+        }
+        this.caret.classList.add('typefx-caret-blink');
+      });
+    }
+
 
   }
 
