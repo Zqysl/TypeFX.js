@@ -1,6 +1,7 @@
 type TypeFXOptions = {
   speed?: number; // typing speed in milliseconds
   speedRange?: number; // random speed range in milliseconds
+  caretWidth?: string; // CSS width of the caret
 };
 
 
@@ -76,6 +77,7 @@ export default class TypeFX {
     this.options = {
       speed: 50,
       speedRange: 50,
+      caretWidth: '0.05em',
       ...options
     };
 
@@ -87,7 +89,8 @@ export default class TypeFX {
       this.el.append(this.caret);
     }
 
-    injectStyle(getCaretStyle());
+
+    injectStyle(getCaretStyle(this.options.caretWidth));
   }
 
   /** Core: attach an async task to the end of the queue and return this for chaining */
