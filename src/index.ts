@@ -68,6 +68,7 @@ export default class TypeFX {
 
   private options: TypeFXOptions;
 
+  private selectedList: Set<HTMLElement> = new Set();
 
   // Internal queue: initially a resolved Promise
   private q: Promise<void> = Promise.resolve();
@@ -127,9 +128,21 @@ export default class TypeFX {
   }
 
   /** Delete n characters */
-  delete(n = 1): this {
+  delete(n = 0): this {
     return this.enqueue(async () => {
       this.caret.classList.remove('typefx-caret-blink');
+
+
+      // If there is a selection, delete the selection first
+      if (this.selectedList.size > 0) {
+        for (const el of this.selectedList) {
+          this.el.removeChild(el);
+        }
+        this.selectedList.clear();
+        await sleep(this.getSpeedDelay());
+      }
+
+
       while (n-- > 0) {
         if (this.aborted) break;
         // Find the last node before the caret
@@ -182,10 +195,13 @@ export default class TypeFX {
         while (n++ < 0) {
           if (this.aborted) break;
           // Find the last node before the caret
-          const prev = this.caret.previousSibling as ChildNode as Element | null;
+          const prev = this.caret.previousSibling as ChildNode as HTMLElement | null;
           if (!prev) break;
           this.el.insertBefore(this.caret, prev);
+
           prev.classList.add("typefx-selected")
+          this.selectedList.add(prev);
+
           await sleep(this.getSpeedDelay());
         }
         this.caret.classList.add('typefx-caret-blink');
@@ -196,10 +212,13 @@ export default class TypeFX {
         while (n-- > 0) {
           if (this.aborted) break;
 
-          const next = this.caret.nextSibling as ChildNode as Element | null;
+          const next = this.caret.nextSibling as ChildNode as HTMLElement | null;
           if (!next) break;
           this.el.insertBefore(this.caret, next.nextSibling);
+
           next.classList.add("typefx-selected")
+          this.selectedList.add(next);
+
           await sleep(this.getSpeedDelay());
         }
         this.caret.classList.add('typefx-caret-blink');
@@ -215,14 +234,18 @@ export default class TypeFX {
     if (n < 0) {
       return this.enqueue(async () => {
         this.caret.classList.remove('typefx-caret-blink');
-        let charEl: Element | null = this.caret.previousSibling as ChildNode as Element | null;
+        let charEl: HTMLElement | null = this.caret.previousSibling as ChildNode as HTMLElement | null;
         if (!charEl) return;
 
         while (n++ < 0) {
           if (this.aborted) break;
-          // Find the last node before the caret
+
+
           charEl.classList.add("typefx-selected")
-          charEl = charEl.previousSibling as ChildNode as Element | null;
+          this.selectedList.add(charEl);
+
+          // Find the last node before the caret
+          charEl = charEl.previousSibling as ChildNode as HTMLElement | null;
           if (!charEl) break;
 
         }
@@ -235,14 +258,16 @@ export default class TypeFX {
     } else {
       return this.enqueue(async () => {
         this.caret.classList.remove('typefx-caret-blink');
-        let charEl: Element | null = this.caret.nextSibling as ChildNode as Element | null;
+        let charEl: HTMLElement | null = this.caret.nextSibling as ChildNode as HTMLElement | null;
         if (!charEl) return;
 
         while (n-- > 0) {
           if (this.aborted) break;
 
           charEl.classList.add("typefx-selected")
-          charEl = charEl.nextSibling as ChildNode as Element | null;
+          this.selectedList.add(charEl);
+
+          charEl = charEl.nextSibling as ChildNode as HTMLElement | null;
           if (!charEl) break;
 
         }
