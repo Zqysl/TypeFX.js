@@ -1,8 +1,8 @@
 {
   "name": "typefxjs",
   "version": "0.0.3",
-  "description": "",
-  "license": "ISC",
+  "description": "A modern typewriter effect library in plain JavaScript",
+  "license": "MIT",
   "author": "Qingyu Zhang",
   "types": "dist/index.d.ts",
   "exports": {
@@ -23,5 +23,13 @@
     "dist",
     "README.md",
     "LICENSE"
+  ],
+  "keywords": [
+    "type",
+    "typed",
+    "typing",
+    "animation",
+    "typewriter",
+    "text"
   ]
 }

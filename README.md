@@ -1,6 +1,6 @@
 # TypeFX.js
 
-A modern typewriter effect in plain JavaScript: type, erase, select – almost anything you’d do on a keyboard.
+A modern typewriter effect library in plain JavaScript: type, erase, select – almost anything you’d do on a keyboard.
 
 
 ![](example.gif)
@@ -55,7 +55,7 @@ onMounted(() => {
 All TypeFX.js APIs are chainable and non-blocking, while each action in the chain is executed in sequence.
 
 ```js
-let typeInstence = new TypeFX(document.querySelector('#content'), {
+const typeInstence = new TypeFX(document.querySelector('#content'), {
     speed: 100,
 })
 ```
@@ -75,8 +75,37 @@ typeInstence.type("Type something, ").wait(300)
 typeInstence.type("then type something else").wait(100)
 ```
 
-## API
 
+
+
+
+## Options
+
+The `TypeFX` constructor accepts an `options` object to control typing speed, randomness, and caret style.
+
+```ts
+new TypeFX(element, options?)
+```
+
+For example:
+```js
+new TypeFX(element, {
+    speed: 100,
+    speedRange: 0,
+    caretWidth: "1ch",
+)
+```
+
+
+| Param | | Description |
+| --- | --- | --- |
+| **speed** | ``number`` (default `50`) | Base typing pause in milliseconds per character. |
+| **speedRange** | ``number`` (default `50`) | Random speed range to simulate natural typing, set to 0 for linear typing|
+| **caretWidth** | ``string`` (default `"0.05em"`) | Width of the caret, should be a valid CSS length. |
+
+
+
+## API
 
 
 | Name | Params | Description |
