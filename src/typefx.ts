@@ -214,7 +214,7 @@ export default class TypeFX {
 
         let next: HTMLElement | null = this.caret;
         let last: HTMLElement | null = next;
-        
+
         while (n-- > 0) {
           last = next;
           next = next.nextSibling as ChildNode as HTMLElement | null;
@@ -329,7 +329,17 @@ export default class TypeFX {
   /** Clear content */
   clear(): this {
     return this.enqueue(async () => {
-      // Keep the caret, only remove preceding nodes
+      while (this.caret.previousSibling) {
+        this.el.removeChild(this.caret.previousSibling);
+        await sleep(this.getSpeedDelay());
+      }
+    });
+  }
+
+
+  /** Quick clear content */
+  quickClear(): this {
+    return this.enqueue(async () => {
       while (this.caret.previousSibling) {
         this.el.removeChild(this.caret.previousSibling);
       }
