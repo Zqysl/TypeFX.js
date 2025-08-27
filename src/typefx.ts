@@ -114,7 +114,14 @@ export default class TypeFX {
       this.caret.classList.remove('typefx-caret-blink');
       for (const ch of Array.from(text)) {
         if (this.aborted) break;
-        const node = getTextElement(ch);
+
+        let node: HTMLElement;
+        if (ch === '\n') {
+          node = document.createElement('br');
+        } else {
+          node = getTextElement(ch);
+        }
+
         this.el.insertBefore(node, this.caret);
         await sleep(this.getSpeedDelay());
       }
@@ -349,14 +356,16 @@ export default class TypeFX {
 
   /** Set typing speed */
   speed(ms: number): this {
-    this.options.speed = ms;
-    return this
+    return this.enqueue(async () => {
+      this.options.speed = ms;
+    });
   }
 
   /** Set typing speed range */
   speedRange(ms: number): this {
-    this.options.speedRange = ms;
-    return this
+    return this.enqueue(async () => {
+      this.options.speedRange = ms;
+    });
   }
 
 
