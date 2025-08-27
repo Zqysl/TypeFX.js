@@ -28,7 +28,7 @@ import TypeFX from "typefxjs";
 
 
 
-## Basic Usage
+## Usage
 
 ```html
 <p id="content"></p>
@@ -37,8 +37,21 @@ import TypeFX from "typefxjs";
 const element = document.querySelector('#content')
 
 new TypeFX(element)
-    .type("Type something with typefx.js!")
+    .type("Type something with typefx.js!").wait(300)
+    .move(-10).wait(400)
+    .select(10).wait(500)
+    .delete()
 ```
+Or define with options:
+```js
+new TypeFX(element, {...})
+    ...
+```
+See [API](#API) and [Options](#options)
+
+
+
+
 
 
 
