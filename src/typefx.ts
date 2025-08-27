@@ -347,6 +347,19 @@ export default class TypeFX {
   }
 
 
+  /** Set typing speed */
+  speed(ms: number): this {
+    this.options.speed = ms;
+    return this
+  }
+
+  /** Set typing speed range */
+  speedRange(ms: number): this {
+    this.options.speedRange = ms;
+    return this
+  }
+
+
   then<TResult1 = void, TResult2 = never>(
     onfulfilled?: ((value: void) => TResult1 | PromiseLike<TResult1>) | null,
     onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null
