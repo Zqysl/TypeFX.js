@@ -368,24 +368,34 @@ export default class TypeFX {
     });
   }
 
-
-  then<TResult1 = void, TResult2 = never>(
-    onfulfilled?: ((value: void) => TResult1 | PromiseLike<TResult1>) | null,
-    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null
-  ): Promise<TResult1 | TResult2> {
-    return this.q.then(onfulfilled, onrejected);
-  }
-  catch<TResult = never>(
-    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null
-  ): Promise<void | TResult> {
-    return this.q.catch(onrejected);
-  }
-  finally(onfinally?: (() => void) | null): Promise<void> {
-    return this.q.finally(onfinally ?? (() => { }));
+  then(func: Function): this {
+    return this.enqueue(async () => {
+      func()
+    });
   }
 
-  /** Cancel subsequent actions */
-  cancel(): void {
+  /** Cancel all current actions */
+  cancel(): this {
     this.aborted = true;
+    this.q.then(() => this.aborted = false);
+    return this;
   }
+
+
+  // then<TResult1 = void, TResult2 = never>(
+  //   onfulfilled?: ((value: void) => TResult1 | PromiseLike<TResult1>) | null,
+  //   onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null
+  // ): Promise<TResult1 | TResult2> {
+  //   return this.q.then(onfulfilled, onrejected);
+  // }
+  // catch<TResult = never>(
+  //   onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null
+  // ): Promise<void | TResult> {
+  //   return this.q.catch(onrejected);
+  // }
+  // finally(onfinally?: (() => void) | null): Promise<void> {
+  //   return this.q.finally(onfinally ?? (() => { }));
+  // }
+
+
 }
