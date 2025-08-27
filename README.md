@@ -146,5 +146,7 @@ new TypeFX(element, {
 | **.quickSelect** | ``n: number`` Number of characters to select (positive = forward, negative = backward) | Instantly selects `n` characters by caret.        |
 | **.clear**       | -                                                                                      | Clears all text.                                  |
 | **.quickClear**  | -                                                                                      | Quick clears all text.                            |
+| **.cancel**      | -                                                                                      | Cancels all current queued actions.               |
+| **.then**        | -                                                                                      | Runs custom function.                             |
 | **.speed**       | ``ms: number`` Time in milliseconds                                                    | Set typing speed.                                 |
 | **.speedRange**  | ``ms: number`` Time in milliseconds                                                    | Set typing speed range.                           |
