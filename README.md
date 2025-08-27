@@ -124,24 +124,27 @@ new TypeFX(element, {
 ```
 
 
-| Param | | Description |
-| --- | --- | --- |
-| **speed** | ``number`` (default `50`) | Base typing pause in milliseconds per character. |
-| **speedRange** | ``number`` (default `50`) | Random speed range to simulate natural typing, set to 0 for linear typing|
-| **caretWidth** | ``string`` (default `"0.05em"`) | Width of the caret, should be a valid CSS length. |
+| Param          |                                 | Description                                                               |
+| -------------- | ------------------------------- | ------------------------------------------------------------------------- |
+| **speed**      | ``number`` (default `50`)       | Base typing pause in milliseconds per character.                          |
+| **speedRange** | ``number`` (default `50`)       | Random speed range to simulate natural typing, set to 0 for linear typing |
+| **caretWidth** | ``string`` (default `"0.05em"`) | Width of the caret, should be a valid CSS length.                         |
 
 
 
 ## API
 
 
-| Name | Params | Description |
-| --- | --- | --- |
-| **.type** | ``text: string`` String to type | Types characters one by one. |
-| **.wait** | ``ms: number`` Time in milliseconds | Wait for a given duration. |
-| **.delete** | ``n?: number`` Number of characters (default `0`) | Deletes `n` characters (and selected characters).|
-| **.move** | ``n: number`` Number of characters to move (positive = right, negative = left) | Moves the caret by `n` characters. |
-| **.quickMove** | ``n: number`` Number of characters to move (positive = right, negative = left) | Instantly moves the caret by `n` characters. |
-| **.select** | ``n: number`` Number of characters to select (positive = forward, negative = backward) | Selects `n` characters by caret. |
-| **.quickSelect** | ``n: number`` Number of characters to select (positive = forward, negative = backward) | Instantly selects `n` characters by caret. |
-| **.clear** | - | Clears all text. |
+| Name             | Params                                                                                 | Description                                       |
+| ---------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **.type**        | ``text: string`` String to type                                                        | Types characters one by one.                      |
+| **.wait**        | ``ms: number`` Time in milliseconds                                                    | Wait for a given duration.                        |
+| **.delete**      | ``n?: number`` Number of characters (default `0`)                                      | Deletes `n` characters (and selected characters). |
+| **.move**        | ``n: number`` Number of characters to move (positive = right, negative = left)         | Moves the caret by `n` characters.                |
+| **.quickMove**   | ``n: number`` Number of characters to move (positive = right, negative = left)         | Instantly moves the caret by `n` characters.      |
+| **.select**      | ``n: number`` Number of characters to select (positive = forward, negative = backward) | Selects `n` characters by caret.                  |
+| **.quickSelect** | ``n: number`` Number of characters to select (positive = forward, negative = backward) | Instantly selects `n` characters by caret.        |
+| **.clear**       | -                                                                                      | Clears all text.                                  |
+| **.quickClear**  | -                                                                                      | Quick clears all text.                            |
+| **.speed**       | ``ms: number`` Time in milliseconds                                                    | Set typing speed.                                 |
+| **.speedRange**  | ``ms: number`` Time in milliseconds                                                    | Set typing speed range.                           |
