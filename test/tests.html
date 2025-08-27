@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeFX.js Test Cases</title>
+
+    <script src="../dist/typefx.umd.js"></script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+                'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            max-width: 800px;
+            margin: 2em auto;
+            padding: 0 1em;
+        }
+
+        .title {
+            margin-bottom: 1em;
+        }
+
+        .testcase {
+            border: 1px solid #ccc;
+            padding: 0.3em 1.5em;
+            margin: 1em;
+
+            font-size: 1.5em;
+
+            position: relative;
+        }
+
+        .case-title {
+            font-size: 0.5em;
+            position: absolute;
+            top: 0.2em;
+            left: 0.3em;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="title">TypeFX.js Test Cases</h1>
+    <div id="test-container"></div>
+
+    <template id="testcase-template">
+
+        <div class="testcase">
+            <div class="case-title"></div>
+            <p class="content">
+
+            </p>
+        </div>
+    </template>
+
+
+    <script>
+        const template = document.getElementById('testcase-template');
+        window.a = template
+        const container = document.getElementById('test-container');
+        function createTestcase(name, testcase) {
+            const testcaseEl = template.content.cloneNode(true)
+            testcaseEl.querySelector('.case-title').innerText = name
+            testcase(testcaseEl.querySelector('.content'))
+            container.appendChild(testcaseEl);
+        }
+    </script>
+
+
+    <script>
+        createTestcase('Type', (element) => {
+            new TypeFX(element)
+                .type('Lorem ipsum dolor sit amet')
+        })
+
+        createTestcase('Move and over move', (element) => {
+            new TypeFX(element)
+                .type('1234567890')
+                .move(10)
+                .move(-20)
+                .move(10)
+        })
+
+        createTestcase('', (element) => {
+            new TypeFX(element)
+                .type('Lorem ipsum dolor sit amet')
+                .delete(10)
+        })
+
+        createTestcase('Delete and over delete', (element) => {
+            new TypeFX(element)
+                .type('1234567890')
+                .speed(200)
+                .wait(300)
+                .delete(3)
+                .wait(500)
+                .delete(20)
+                .speed(50)
+                .type('done.')
+        })
+
+        createTestcase('Cancel after 600ms', (element) => {
+            const instance = new TypeFX(element)
+                .type('12345678901234567890123456789012345678901234567890')
+
+            setTimeout(() => {
+                instance.cancel()
+            }, 600);
+
+        })
+
+
+        createTestcase('Custom loop', (element) => {
+            const instance = new TypeFX(element)
+                .type("Wait ")
+
+
+            const loopA = () => {
+                instance
+                    .speed(500)
+                    .type(".....")
+                    .speed(50)
+                    .delete(5)
+                    .then(loopA)
+            }
+            loopA()
+        })
+
+        createTestcase('Custom loop with interrupt', (element) => {
+            const instance = new TypeFX(element)
+                .type("Wait ")
+
+
+            const loopA = () => {
+                instance
+                    .speed(500)
+                    .type(".....")
+                    .speed(50)
+                    .delete(5)
+                    .then(loopA)
+            }
+            loopA()
+
+            window.instance = instance
+
+            setTimeout(() => {
+                instance
+                    .cancel()
+                    .speed(50)
+                    .wait(50)
+                    .type(" Done.")
+            }, 5000);
+        })
+
+        createTestcase('Caret width', (element) => {
+            const instance = new TypeFX(element, { caretWidth: '1ch' })
+                .type("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+        })
+
+    </script>
+</body>
+
+</html>
