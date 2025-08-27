@@ -6,23 +6,37 @@ A modern typewriter effect library in plain JavaScript: type, erase, select – 
 ![](example.gif)
 
 
+
+
 ## Installation
+
+### CDN
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/typefxjs/dist/typefx.umd.min.js"></script>
+```
+
 
 ### NPM
 
 ```shell
 npm install typefxjs
 ```
-
-
-
-## ESM Usage
-
-
 ```js
-import TypeFX from "typefxjs";
+import TypeFX from "typefxjs"; 
+```
 
-new TypeFX(document.querySelector('#content'))
+
+
+## Basic Usage
+
+```html
+<p id="content"></p>
+```
+```js
+const element = document.querySelector('#content')
+
+new TypeFX(element)
     .type("Type something with typefx.js!")
 ```
 
