@@ -1,23 +1,20 @@
 {
   "name": "typefxjs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A modern typewriter effect library in plain JavaScript",
   "license": "MIT",
   "author": "Qingyu Zhang",
-  "types": "dist/index.d.ts",
+  "types": "dist/typefx.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "types": "./dist/typefx.d.ts",
+      "import": "./dist/typefx.js",
+      "require": "./dist/typefx.cjs"
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && rollup -c",
     "prepublishOnly": "npm run build"
-  },
-  "dependencies": {
-    "typescript": "^5.9.2"
   },
   "files": [
     "dist",
@@ -31,5 +28,11 @@
     "animation",
     "typewriter",
     "text"
-  ]
+  ],
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "rollup": "^4.49.0",
+    "typescript": "^5.9.2"
+  }
 }
