@@ -10,7 +10,7 @@ type TypeFXOptions = {
 const TYPEFX_STYLE_ID = 'typefx-style';
 
 
-function getCaretStyle(width = '0.05em'): string {
+function getCaretStyle(): string {
   return `
     .typefx-caret{
       position: absolute;
@@ -20,7 +20,7 @@ function getCaretStyle(width = '0.05em'): string {
     }
     .typefx-caret::after {
       width: 0px;
-      border-left: ${width} solid currentColor;
+      border-left: var(--typefx-caret-width) solid currentColor;
       
       overflow: visible;
       content: "";
@@ -93,8 +93,9 @@ export default class TypeFX {
       this.el.append(this.caret);
     }
 
+    this.caret.style.setProperty('--typefx-caret-width', this.options.caretWidth!);
 
-    injectStyle(getCaretStyle(this.options.caretWidth));
+    injectStyle(getCaretStyle());
   }
 
   /** Core: attach an async task to the end of the queue and return this for chaining */

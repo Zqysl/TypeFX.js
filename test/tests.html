@@ -154,8 +154,14 @@
         })
 
         createTestcase('Caret width', (element) => {
+
+            element.style.fontFamily = 'monospace'
+            element.style.fontspacing = '0.1em'
+
             const instance = new TypeFX(element, { caretWidth: '1ch' })
                 .type("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+                .select(-20)
+                .delete()
         })
 
     </script>
