@@ -164,6 +164,13 @@
                 .delete()
         })
 
+        createTestcase('Hide Caret', (element) => {
+
+            const instance = new TypeFX(element, { caretWidth: '1ch' })
+                .type("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+                .hideCaret()
+        })
+
     </script>
 </body>
 

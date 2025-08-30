@@ -29,6 +29,9 @@ function getCaretStyle(): string {
     .typefx-caret.typefx-caret-blink {
       animation: typefx-caret-blink 0.9s steps(1, end) infinite;
     }
+    .typefx-caret.typefx-caret-hidden {
+      display: none;
+    }
     .typefx-selected {
       background-color: #00000044;
     }
@@ -381,6 +384,21 @@ export default class TypeFX {
     this.q.then(() => this.aborted = false);
     return this;
   }
+
+  /** Hide caret */
+  hideCaret(): this {
+    return this.enqueue(async () => {
+      this.caret.classList.add('typefx-caret-hidden');
+    });
+  }
+
+  /** Show caret */
+  showCaret(): this {
+    return this.enqueue(async () => {
+      this.caret.classList.remove('typefx-caret-hidden');
+    });
+  }
+
 
 
   // then<TResult1 = void, TResult2 = never>(
