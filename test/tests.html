@@ -56,14 +56,19 @@
 
 
     <script>
+        window.testcases = []
+
         const template = document.getElementById('testcase-template');
-        window.a = template
         const container = document.getElementById('test-container');
+
         function createTestcase(name, testcase) {
             const testcaseEl = template.content.cloneNode(true)
-            testcaseEl.querySelector('.case-title').innerText = name
-            testcase(testcaseEl.querySelector('.content'))
+            testcaseEl.querySelector('.case-title').innerText = window.testcases.length + ". " + name
+            const typefxContainer = testcaseEl.querySelector('.content')
+            testcase(typefxContainer)
             container.appendChild(testcaseEl);
+
+            window.testcases.push(typefxContainer)
         }
     </script>
 
@@ -88,14 +93,24 @@
             new TypeFX(element)
                 .type('1234567890')
                 .move(10)
+                .wait(300)
+                .move(-2)
+                .wait(1000)
                 .move(-20)
-                .move(10)
+                .wait(300)
+                .move(2)
         })
 
         createTestcase('Delete', (element) => {
             new TypeFX(element)
                 .type('Lorem ipsum dolor sit amet')
                 .delete(10)
+        })
+
+        createTestcase('quickDelete', (element) => {
+            new TypeFX(element)
+                .type('Lorem ipsum dolor sit amet')
+                .quickDelete(10)
         })
 
         createTestcase('Delete and over delete', (element) => {
