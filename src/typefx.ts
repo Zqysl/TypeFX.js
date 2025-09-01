@@ -194,6 +194,33 @@ export default class TypeFX {
     });
   }
 
+
+  /** Quick delete n characters */
+  quickDelete(n = 0): this {
+    return this.enqueue(async () => {
+      this.caret.classList.remove('typefx-caret-blink');
+
+
+      // If there is a selection, delete the selection first
+      if (this.selectedList.size > 0) {
+        for (const el of this.selectedList) {
+          this.el.removeChild(el);
+        }
+        this.selectedList.clear();
+      }
+
+
+      while (n-- > 0) {
+        if (this.aborted) break;
+        // Find the last node before the caret
+        const prev = this.caret.previousElementSibling as ChildNode | null;
+        if (!prev) break;
+        this.el.removeChild(prev);
+      }
+      this.caret.classList.add('typefx-caret-blink');
+    });
+  }
+
   /** Move caret n characters */
   move(n: number): this {
     if (n < 0) {
