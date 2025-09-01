@@ -141,6 +141,26 @@ export default class TypeFX {
     });
   }
 
+  /** Type: Quick insert string before the caret */
+  quickType(text: string): this {
+    return this.enqueue(async () => {
+      this.caret.classList.remove('typefx-caret-blink');
+      for (const ch of Array.from(text)) {
+        if (this.aborted) break;
+
+        let node: HTMLElement;
+        if (ch === '\n') {
+          node = document.createElement('br');
+        } else {
+          node = getTextElement(ch);
+        }
+
+        this.el.insertBefore(node, this.caret);
+      }
+      this.caret.classList.add('typefx-caret-blink');
+    });
+  }
+
   /** Wait for a period */
   wait(ms: number): this {
     return this.enqueue(async () => { await sleep(ms); });

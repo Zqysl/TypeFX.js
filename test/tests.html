@@ -74,6 +74,16 @@
                 .type('Lorem ipsum dolor sit amet')
         })
 
+        createTestcase('Quick Type', (element) => {
+            const instance = new TypeFX(element)
+                .wait(1000)
+                .quickType("Lorem ipsum dolor sit amet")
+                .wait(1000).type("\n")
+                .quickType("Lorem ipsum dolor sit amet")
+                .wait(1000).type("\n")
+                .quickType("Lorem ipsum dolor sit amet")
+        })
+
         createTestcase('Move and over move', (element) => {
             new TypeFX(element)
                 .type('1234567890')
@@ -153,7 +163,7 @@
             }, 5000);
         })
 
-        createTestcase('Caret width', (element) => {
+        createTestcase('Caret width with monospace font', (element) => {
 
             element.style.fontFamily = 'monospace'
             element.style.fontspacing = '0.1em'
@@ -174,6 +184,21 @@
         createTestcase('Empty', (element) => {
             const instance = new TypeFX(element)
         })
+
+        createTestcase('New Line', (element) => {
+            const instance = new TypeFX(element)
+                .type("Line1: aaaaa")
+                .type("\n")
+                .type("Line2: bbbbb")
+                .type("\n")
+                .type("Line3: ccccc")
+        })
+
+        createTestcase('New Line', (element) => {
+            const instance = new TypeFX(element)
+                .type("Line1: aaaaa\nLine2: bbbbb\nLine3: ccccc")
+        })
+
 
     </script>
 </body>
