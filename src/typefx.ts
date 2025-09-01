@@ -12,6 +12,12 @@ const TYPEFX_STYLE_ID = 'typefx-style';
 
 function getCaretStyle(): string {
   return `
+    .typefx-container::after {
+      content: "\\200B";
+      visibility: hidden;
+      user-select: none;
+      pointer-events: none;
+    }
     .typefx-caret{
       position: absolute;
       display: inline-block;
@@ -80,6 +86,8 @@ export default class TypeFX {
 
   constructor(element: HTMLElement, options?: TypeFXOptions) {
     this.el = element;
+
+    this.el.classList.add("typefx-container")
 
     this.options = {
       speed: 50,

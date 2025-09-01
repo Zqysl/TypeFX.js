@@ -82,7 +82,7 @@
                 .move(10)
         })
 
-        createTestcase('', (element) => {
+        createTestcase('Delete', (element) => {
             new TypeFX(element)
                 .type('Lorem ipsum dolor sit amet')
                 .delete(10)
@@ -166,9 +166,13 @@
 
         createTestcase('Hide Caret', (element) => {
 
-            const instance = new TypeFX(element, { caretWidth: '1ch' })
+            const instance = new TypeFX(element)
                 .type("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
                 .hideCaret()
+        })
+
+        createTestcase('Empty', (element) => {
+            const instance = new TypeFX(element)
         })
 
     </script>
