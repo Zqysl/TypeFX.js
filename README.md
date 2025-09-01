@@ -135,18 +135,22 @@ new TypeFX(element, {
 ## API
 
 
-| Name             | Params                                                                                 | Description                                       |
-| ---------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| **.type**        | ``text: string`` String to type                                                        | Types characters one by one.                      |
-| **.wait**        | ``ms: number`` Time in milliseconds                                                    | Wait for a given duration.                        |
-| **.delete**      | ``n?: number`` Number of characters (default `0`)                                      | Deletes `n` characters (and selected characters). |
-| **.move**        | ``n: number`` Number of characters to move (positive = right, negative = left)         | Moves the caret by `n` characters.                |
-| **.quickMove**   | ``n: number`` Number of characters to move (positive = right, negative = left)         | Instantly moves the caret by `n` characters.      |
-| **.select**      | ``n: number`` Number of characters to select (positive = forward, negative = backward) | Selects `n` characters by caret.                  |
-| **.quickSelect** | ``n: number`` Number of characters to select (positive = forward, negative = backward) | Instantly selects `n` characters by caret.        |
-| **.clear**       | -                                                                                      | Clears all text.                                  |
-| **.quickClear**  | -                                                                                      | Quick clears all text.                            |
-| **.cancel**      | -                                                                                      | Cancels all current queued actions.               |
-| **.then**        | -                                                                                      | Runs custom function.                             |
-| **.speed**       | ``ms: number`` Time in milliseconds                                                    | Set typing speed.                                 |
-| **.speedRange**  | ``ms: number`` Time in milliseconds                                                    | Set typing speed range.                           |
+| Name             | Params                                                                                 | Description                                                 |
+| ---------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| **.type**        | ``text: string`` String to type                                                        | Types characters one by one.                                |
+| **.quickType**   | ``text: string`` String to type                                                        | Instantly types characters.                                 |
+| **.wait**        | ``ms: number`` Time in milliseconds                                                    | Wait for a given duration.                                  |
+| **.delete**      | ``n?: number`` Number of characters (default `0`)                                      | Deletes `n` characters (and selected characters).           |
+| **.quickDelete** | ``n?: number`` Number of characters (default `0`)                                      | Instantly deletes `n` characters (and selected characters). |
+| **.move**        | ``n: number`` Number of characters to move (positive = right, negative = left)         | Moves the caret by `n` characters.                          |
+| **.quickMove**   | ``n: number`` Number of characters to move (positive = right, negative = left)         | Instantly moves the caret by `n` characters.                |
+| **.select**      | ``n: number`` Number of characters to select (positive = forward, negative = backward) | Selects `n` characters by caret.                            |
+| **.quickSelect** | ``n: number`` Number of characters to select (positive = forward, negative = backward) | Instantly selects `n` characters by caret.                  |
+| **.clear**       | -                                                                                      | Clears all text.                                            |
+| **.quickClear**  | -                                                                                      | Quick clears all text.                                      |
+| **.cancel**      | -                                                                                      | Cancels all current queued actions.                         |
+| **.then**        | -                                                                                      | Runs custom function.                                       |
+| **.speed**       | ``ms: number`` Time in milliseconds                                                    | Set typing speed.                                           |
+| **.speedRange**  | ``ms: number`` Time in milliseconds                                                    | Set typing speed range.                                     |
+| **.hideCaret**   | -                                                                                      | Hides caret.                                                |
+| **.showCaret**   | -                                                                                      | Shows caret.                                                |
