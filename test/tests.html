@@ -215,6 +215,19 @@
         })
 
 
+        createTestcase('Re-define instance', (element) => {
+            const instance = new TypeFX(element)
+                .type("instance aaaaaaaaaaa ")
+
+            const instance2 = new TypeFX(element)
+                .type("instance bbbbbbbbbbb")
+
+            const abequal = (instance == instance2).toString()
+            instance
+                .type("\nAB Equal:")
+                .type(abequal)
+        })
+
     </script>
 </body>
 

@@ -6,7 +6,6 @@ type TypeFXOptions = {
 
 
 
-
 const TYPEFX_STYLE_ID = 'typefx-style';
 
 
@@ -72,10 +71,10 @@ function getTextElement(char: string): HTMLElement {
 
 
 export default class TypeFX {
-  private el: HTMLElement;
-  private caret: HTMLElement;
+  private el!: HTMLElement;
+  private caret!: HTMLElement;
 
-  private options: TypeFXOptions;
+  private options!: TypeFXOptions;
 
   private selectedList: Set<HTMLElement> = new Set();
 
@@ -85,7 +84,12 @@ export default class TypeFX {
   private aborted = false;
 
   constructor(element: HTMLElement, options?: TypeFXOptions) {
+    if ((element as any).typefx) {
+      return (element as any).typefx
+    }
+
     this.el = element;
+    (this.el as any).typefx = this;
 
     this.el.classList.add("typefx-container")
 
