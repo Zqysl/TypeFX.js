@@ -124,11 +124,12 @@ new TypeFX(element, {
 ```
 
 
-| Param          |                                 | Description                                                               |
-| -------------- | ------------------------------- | ------------------------------------------------------------------------- |
-| **speed**      | ``number`` (default `50`)       | Base typing pause in milliseconds per character.                          |
-| **speedRange** | ``number`` (default `50`)       | Random speed range to simulate natural typing, set to 0 for linear typing |
-| **caretWidth** | ``string`` (default `"0.05em"`) | Width of the caret, should be a valid CSS length.                         |
+| Param          |                                       | Description                                                               |
+| -------------- | ------------------------------------- | ------------------------------------------------------------------------- |
+| **speed**      | ``number`` (default `50`)             | Base typing pause in milliseconds per character.                          |
+| **speedRange** | ``number`` (default `50`)             | Random speed range to simulate natural typing, set to 0 for linear typing |
+| **caretWidth** | ``string`` (default `"0.05em"`)       | Width of the caret, should be a valid CSS length.                         |
+| **caretColor** | ``string`` (default `"currentColor"`) | Color of the caret, should be a valid CSS color.                          |
 
 
 

@@ -189,6 +189,13 @@
                 .delete()
         })
 
+        createTestcase('Caret color', (element) => {
+            const instance = new TypeFX(element, { caretWidth: '1ch', caretColor: "red" })
+                .type("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+                .select(-20)
+                .delete()
+        })
+
         createTestcase('Hide Caret', (element) => {
 
             const instance = new TypeFX(element)

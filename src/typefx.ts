@@ -2,6 +2,7 @@ type TypeFXOptions = {
   speed?: number; // typing speed in milliseconds
   speedRange?: number; // random speed range in milliseconds
   caretWidth?: string; // CSS width of the caret
+  caretColor?: string; // CSS color of the caret
 };
 
 
@@ -25,7 +26,7 @@ function getCaretStyle(): string {
     }
     .typefx-caret::after {
       width: 0px;
-      border-left: var(--typefx-caret-width) solid currentColor;
+      border-left: var(--typefx-caret-width) solid var(--typefx-caret-color);
       
       overflow: visible;
       content: "";
@@ -97,6 +98,7 @@ export default class TypeFX {
       speed: 50,
       speedRange: 50,
       caretWidth: '0.05em',
+      caretColor: 'currentColor',
       ...options
     };
 
@@ -109,6 +111,7 @@ export default class TypeFX {
     }
 
     this.caret.style.setProperty('--typefx-caret-width', this.options.caretWidth!);
+    this.caret.style.setProperty('--typefx-caret-color', this.options.caretColor!);
 
     injectStyle(getCaretStyle());
   }
