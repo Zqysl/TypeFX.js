@@ -8,7 +8,8 @@
     "emitDeclarationOnly": false,
     "outDir": "dist",
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowArbitraryExtensions": true
   },
   "include": ["src/**/*"]
 }

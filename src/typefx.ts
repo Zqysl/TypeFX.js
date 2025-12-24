@@ -1,64 +1,11 @@
+import './typefx.css';
+
 type TypeFXOptions = {
   speed?: number; // typing speed in milliseconds
   speedRange?: number; // random speed range in milliseconds
   caretWidth?: string; // CSS width of the caret
   caretColor?: string; // CSS color of the caret
 };
-
-
-
-const TYPEFX_STYLE_ID = 'typefx-style';
-
-
-function getCaretStyle(): string {
-  return `
-    .typefx-container::after {
-      content: "\\200B";
-      visibility: hidden;
-      user-select: none;
-      pointer-events: none;
-    }
-    .typefx-caret{
-      position: absolute;
-      display: inline-block;
-      overflow: visible;
-      width: 0px;
-    }
-    .typefx-caret::after {
-      width: 0px;
-      border-left: var(--typefx-caret-width) solid var(--typefx-caret-color);
-      
-      overflow: visible;
-      content: "";
-      position: relative;
-    }
-    .typefx-caret.typefx-caret-blink {
-      animation: typefx-caret-blink 0.9s steps(1, end) infinite;
-    }
-    .typefx-caret.typefx-caret-hidden {
-      display: none;
-    }
-    .typefx-selected {
-      background-color: #00000044;
-    }
-    @keyframes typefx-caret-blink { 0%, 49% {opacity: 1;} 50%, 100% { opacity: 0; } }
-`
-}
-
-
-
-function injectStyle(cssText: string) {
-  if (typeof document === 'undefined') return;
-  if (document.getElementById(TYPEFX_STYLE_ID)) return;
-  const style = document.createElement('style');
-  style.id = TYPEFX_STYLE_ID;
-  style.textContent = cssText;
-  document.head.appendChild(style);
-}
-
-
-
-
 
 const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
 
@@ -112,8 +59,6 @@ export default class TypeFX {
 
     this.caret.style.setProperty('--typefx-caret-width', this.options.caretWidth!);
     this.caret.style.setProperty('--typefx-caret-color', this.options.caretColor!);
-
-    injectStyle(getCaretStyle());
   }
 
   /** Core: attach an async task to the end of the queue and return this for chaining */
