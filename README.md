@@ -23,9 +23,12 @@ A modern typewriter effect library in plain JavaScript: type, erase, select – 
 npm install typefxjs
 ```
 ```js
+// ESM
 import TypeFX from "typefxjs"; 
-```
 
+// CommonJS
+const TypeFX = require('typefxjs')
+```
 
 
 ## Usage
@@ -74,6 +77,27 @@ onMounted(() => {
 })
 </script>
 ```
+
+
+## React Usage
+
+```jsx
+import { useEffect, useRef } from 'react'
+import TypeFX from 'typefxjs'
+
+export default function Demo() {
+    const ref = useRef(null)
+
+    useEffect(() => {
+        if (!ref.current) return
+        new TypeFX(ref.current)
+            .type('Type something with typefx.js!')
+    }, [])
+
+    return <p ref={ref} />
+}
+```
+
 
 
 
