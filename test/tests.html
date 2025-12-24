@@ -113,6 +113,17 @@
                 .quickDelete(10)
         })
 
+        createTestcase('Clear and quick clear', (element) => {
+            new TypeFX(element)
+                .type('Lorem ipsum dolor sit amet')
+                .clear(10)
+                .type('Lorem ipsum dolor sit amet')
+                .quickClear()
+                .type('done.')
+        })
+
+
+
         createTestcase('Delete and over delete', (element) => {
             new TypeFX(element)
                 .type('1234567890')
@@ -167,8 +178,6 @@
             }
             loopA()
 
-            window.instance = instance
-
             setTimeout(() => {
                 instance
                     .cancel()
@@ -199,8 +208,9 @@
         createTestcase('Hide Caret', (element) => {
 
             const instance = new TypeFX(element)
-                .type("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+                .type("Lorem ipsum dolor sit amet")
                 .hideCaret()
+                .type(", consectetur adipiscing elit.")
         })
 
         createTestcase('Empty', (element) => {
@@ -216,7 +226,7 @@
                 .type("Line3: ccccc")
         })
 
-        createTestcase('New Line', (element) => {
+        createTestcase('New Line 2', (element) => {
             const instance = new TypeFX(element)
                 .type("Line1: aaaaa\nLine2: bbbbb\nLine3: ccccc")
         })
@@ -229,10 +239,10 @@
             const instance2 = new TypeFX(element)
                 .type("instance bbbbbbbbbbb")
 
-            const abequal = (instance == instance2).toString()
+            const isEqual = (instance == instance2).toString()
             instance
-                .type("\nAB Equal:")
-                .type(abequal)
+                .type("\nAB Equal: ")
+                .type(isEqual)
         })
 
     </script>

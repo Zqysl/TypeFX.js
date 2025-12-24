@@ -402,22 +402,13 @@ export default class TypeFX {
 
   /** Clear content */
   clear(): this {
-    return this.enqueue(async () => {
-      while (this.caret.previousElementSibling) {
-        this.el.removeChild(this.caret.previousElementSibling);
-        await sleep(this.getSpeedDelay());
-      }
-    });
+    return this.delete(Infinity)
   }
 
 
   /** Quick clear content */
   quickClear(): this {
-    return this.enqueue(async () => {
-      while (this.caret.previousElementSibling) {
-        this.el.removeChild(this.caret.previousElementSibling);
-      }
-    });
+    return this.quickDelete(Infinity)
   }
 
 
