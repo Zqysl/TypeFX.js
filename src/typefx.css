@@ -23,6 +23,10 @@
 .typefx-caret.typefx-caret-hidden {
   display: none;
 }
+.typefx-char {
+  display: inline-block;
+  white-space: pre;
+}
 .typefx-selected {
   background-color: #00000044;
 }

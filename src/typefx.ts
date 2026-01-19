@@ -21,6 +21,7 @@ const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
 function getTextElement(char: string): HTMLElement {
   const e = document.createElement('span');
   e.textContent = char;
+  e.classList.add('typefx-char');
   return e;
 }
 
