@@ -357,6 +357,40 @@
                 .type(isEqual)
         })
 
+        createTestcase('Custom Entry Animation', (element) => {
+            const instance = new TypeFX(element, {
+                entryAnimation: {
+                    keyframes: [
+                        { opacity: 0, transform: 'translateY(10px)' },
+                        { opacity: 1, transform: 'translateY(0)' }
+                    ],
+                    options: {
+                        duration: 300,
+                        easing: 'ease-out'
+                    }
+                }
+            })
+                .type("This text enters with a custom animation.")
+        })
+
+        createTestcase('Custom Delete Animation', (element) => {
+            const instance = new TypeFX(element, {
+                deleteAnimation: {
+                    keyframes: [
+                        { opacity: 1, transform: 'scale(1)' },
+                        { opacity: 0, transform: 'scale(0.5)' }
+                    ],
+                    options: {
+                        duration: 300,
+                        easing: 'ease-in'
+                    }
+                }
+            })
+                .type("This text will be deleted with a custom animation.")
+                .wait(1000)
+                .delete(10)
+        })
+
     </script>
 </body>
 

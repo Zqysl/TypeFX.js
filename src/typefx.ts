@@ -1,10 +1,17 @@
 import './typefx.css';
 
+type AnimationOptions = {
+  keyframes: Keyframe[] | PropertyIndexedKeyframes;
+  options?: number | KeyframeAnimationOptions;
+};
+
 type TypeFXOptions = {
   speed?: number; // typing speed in milliseconds
   speedRange?: number; // random speed range in milliseconds
   caretWidth?: string; // CSS width of the caret
   caretColor?: string; // CSS color of the caret
+  entryAnimation?: AnimationOptions; // Custom entry animation
+  deleteAnimation?: AnimationOptions; // Custom delete animation
 };
 
 const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
@@ -87,6 +94,12 @@ export default class TypeFX {
         }
 
         this.el.insertBefore(node, this.caret);
+
+        if (this.options.entryAnimation) {
+          const { keyframes, options } = this.options.entryAnimation;
+          node.animate(keyframes, options);
+        }
+
         await sleep(this.getSpeedDelay());
       }
       this.caret.classList.add('typefx-caret-blink');
@@ -137,9 +150,17 @@ export default class TypeFX {
       while (n-- > 0) {
         if (this.aborted) break;
         // Find the last node before the caret
-        const prev = this.caret.previousElementSibling as ChildNode | null;
+        const prev = this.caret.previousElementSibling as ChildNode as HTMLElement | null;
         if (!prev) break;
-        this.el.removeChild(prev);
+
+        if (this.options.deleteAnimation) {
+          this.el.insertBefore(this.caret, prev);
+          const { keyframes, options } = this.options.deleteAnimation;
+          const animation = prev.animate(keyframes, options);
+          animation.finished.then(() => prev.remove());
+        } else {
+          this.el.removeChild(prev);
+        }
         await sleep(this.getSpeedDelay());
       }
       this.caret.classList.add('typefx-caret-blink');
@@ -195,7 +216,6 @@ export default class TypeFX {
           if (this.aborted) break;
 
           const next = this.caret.nextElementSibling as ChildNode as HTMLElement | null;
-          console.log("next", next)
           if (!next) break;
           this.el.insertBefore(this.caret, next.nextElementSibling);
           await sleep(this.getSpeedDelay());
