@@ -144,16 +144,26 @@ new TypeFX(element, {
     speed: 100,
     speedRange: 0,
     caretWidth: "1ch",
-)
+    entryAnimation: {
+        keyframes: [{ opacity: 0 }, { opacity: 1 }],
+        options: { duration: 300 }
+    },
+    deleteAnimation: {
+        keyframes: [{ opacity: 1 }, { opacity: 0 }],
+        options: { duration: 300 }
+    }
+})
 ```
 
 
-| Param          |                                       | Description                                                               |
-| -------------- | ------------------------------------- | ------------------------------------------------------------------------- |
-| **speed**      | ``number`` (default `50`)             | Base typing pause in milliseconds per character.                          |
-| **speedRange** | ``number`` (default `50`)             | Random speed range to simulate natural typing, set to 0 for linear typing |
-| **caretWidth** | ``string`` (default `"0.05em"`)       | Width of the caret, should be a valid CSS length.                         |
-| **caretColor** | ``string`` (default `"currentColor"`) | Color of the caret, should be a valid CSS color.                          |
+| Param               |                                       | Description                                                               |
+| ------------------- | ------------------------------------- | ------------------------------------------------------------------------- |
+| **speed**           | ``number`` (default `50`)             | Base typing pause in milliseconds per character.                          |
+| **speedRange**      | ``number`` (default `50`)             | Random speed range to simulate natural typing, set to 0 for linear typing |
+| **caretWidth**      | ``string`` (default `"0.05em"`)       | Width of the caret, should be a valid CSS length.                         |
+| **caretColor**      | ``string`` (default `"currentColor"`) | Color of the caret, should be a valid CSS color.                          |
+| **entryAnimation**  | ``object``                            | Custom entry animation using Web Animations API.                          |
+| **deleteAnimation** | ``object``                            | Custom delete animation using Web Animations API.                         |
 
 
 
