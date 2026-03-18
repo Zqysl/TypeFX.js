@@ -378,7 +378,22 @@ export default class TypeFX {
 
   /** Quick clear content */
   quickClear(): this {
-    return this.quickDelete(Infinity)
+    return this.enqueue(async () => {
+      this.caret.classList.remove('typefx-caret-blink');
+
+      if (this.selectedList.size > 0) {
+        for (const el of this.selectedList) {
+          this.el.removeChild(el);
+        }
+        this.selectedList.clear();
+      }
+
+      while (this.caret.previousElementSibling) {
+        this.el.removeChild(this.caret.previousElementSibling);
+      }
+
+      this.caret.classList.add('typefx-caret-blink');
+    });
   }
 
 
