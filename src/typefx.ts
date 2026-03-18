@@ -111,6 +111,8 @@ export default class TypeFX {
   quickType(text: string): this {
     return this.enqueue(async () => {
       this.caret.classList.remove('typefx-caret-blink');
+      const fragment = document.createDocumentFragment();
+
       for (const ch of Array.from(text)) {
         if (this.aborted) break;
 
@@ -121,8 +123,10 @@ export default class TypeFX {
           node = getTextElement(ch);
         }
 
-        this.el.insertBefore(node, this.caret);
+        fragment.append(node);
       }
+
+      this.el.insertBefore(fragment, this.caret);
       this.caret.classList.add('typefx-caret-blink');
     });
   }
