@@ -29,6 +29,8 @@ function getTextElement(char: string): HTMLElement {
 
 
 export default class TypeFX {
+  private static readonly instances = new WeakMap<HTMLElement, TypeFX>();
+
   private el!: HTMLElement;
   private caret!: HTMLElement;
 
@@ -42,12 +44,13 @@ export default class TypeFX {
   private aborted = false;
 
   constructor(element: HTMLElement, options?: TypeFXOptions) {
-    if ((element as any).typefx) {
-      return (element as any).typefx
+    const existingInstance = TypeFX.instances.get(element);
+    if (existingInstance) {
+      return existingInstance;
     }
 
     this.el = element;
-    (this.el as any).typefx = this;
+    TypeFX.instances.set(this.el, this);
 
     this.el.classList.add("typefx-container")
 
