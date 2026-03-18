@@ -193,22 +193,28 @@ export default class TypeFX {
     }
   }
 
+  private async withCaretTask(task: () => Promise<void>): Promise<void> {
+    this.caret.classList.remove('typefx-caret-blink');
+
+    try {
+      await task();
+    } finally {
+      this.caret.classList.add('typefx-caret-blink');
+    }
+  }
+
   /** Type: insert string character by character before the caret */
   type(text: string): this {
-    return this.enqueue(async () => {
-      this.caret.classList.remove('typefx-caret-blink');
+    return this.enqueue(() => this.withCaretTask(async () => {
       await this.insertText(text, false);
-      this.caret.classList.add('typefx-caret-blink');
-    });
+    }));
   }
 
   /** Type: Quick insert string before the caret */
   quickType(text: string): this {
-    return this.enqueue(async () => {
-      this.caret.classList.remove('typefx-caret-blink');
+    return this.enqueue(() => this.withCaretTask(async () => {
       await this.insertText(text, true);
-      this.caret.classList.add('typefx-caret-blink');
-    });
+    }));
   }
 
   /** Wait for a period */
@@ -218,65 +224,51 @@ export default class TypeFX {
 
   /** Delete n characters */
   delete(n = 0): this {
-    return this.enqueue(async () => {
-      this.caret.classList.remove('typefx-caret-blink');
+    return this.enqueue(() => this.withCaretTask(async () => {
       await this.deleteBeforeCaret(n, false);
-      this.caret.classList.add('typefx-caret-blink');
-    });
+    }));
   }
 
 
   /** Quick delete n characters */
   quickDelete(n = 0): this {
-    return this.enqueue(async () => {
-      this.caret.classList.remove('typefx-caret-blink');
+    return this.enqueue(() => this.withCaretTask(async () => {
       await this.deleteBeforeCaret(n, true);
-      this.caret.classList.add('typefx-caret-blink');
-    });
+    }));
   }
 
   /** Move caret n characters */
   move(n: number): this {
-    return this.enqueue(async () => {
-      this.caret.classList.remove('typefx-caret-blink');
+    return this.enqueue(() => this.withCaretTask(async () => {
       await this.traverseCaret(n, false, false);
-      this.caret.classList.add('typefx-caret-blink');
-    });
+    }));
   }
 
   /** Quick move caret n characters */
   quickMove(n: number): this {
-    return this.enqueue(async () => {
-      this.caret.classList.remove('typefx-caret-blink');
+    return this.enqueue(() => this.withCaretTask(async () => {
       await this.traverseCaret(n, true, false);
-      this.caret.classList.add('typefx-caret-blink');
       await sleep(this.getSpeedDelay());
-    });
+    }));
   }
 
   /** Select n characters */
   select(n: number): this {
-    return this.enqueue(async () => {
-      this.caret.classList.remove('typefx-caret-blink');
+    return this.enqueue(() => this.withCaretTask(async () => {
       await this.traverseCaret(n, false, true);
-      this.caret.classList.add('typefx-caret-blink');
-    });
+    }));
   }
 
 
   /** Quick select n characters */
   quickSelect(n: number): this {
-    return this.enqueue(async () => {
-      this.caret.classList.remove('typefx-caret-blink');
-
+    return this.enqueue(() => this.withCaretTask(async () => {
       const initialSibling = this.getCaretSibling(n < 0 ? -1 : 1);
       if (!initialSibling) return;
 
       await this.traverseCaret(n, true, true);
       await sleep(this.getSpeedDelay());
-
-      this.caret.classList.add('typefx-caret-blink');
-    });
+    }));
   }
 
   /** Clear content */
@@ -287,9 +279,7 @@ export default class TypeFX {
 
   /** Quick clear content */
   quickClear(): this {
-    return this.enqueue(async () => {
-      this.caret.classList.remove('typefx-caret-blink');
-
+    return this.enqueue(() => this.withCaretTask(async () => {
       if (this.selectedList.size > 0) {
         this.clearSelection();
       }
@@ -297,9 +287,7 @@ export default class TypeFX {
       while (this.caret.previousElementSibling) {
         this.el.removeChild(this.caret.previousElementSibling);
       }
-
-      this.caret.classList.add('typefx-caret-blink');
-    });
+    }));
   }
 
 
