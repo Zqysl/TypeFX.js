@@ -1,3 +1,7 @@
+import { readFile } from 'node:fs/promises';
+
+import ts from 'typescript';
+
 class FakeClassList {
   constructor() {
     this.tokens = new Set();
@@ -247,7 +251,20 @@ export function installFakeDom() {
 
 export async function loadTypeFX() {
   if (!typefxModulePromise) {
-    typefxModulePromise = import(new URL('../../dist/typefx.js', import.meta.url));
+    typefxModulePromise = (async () => {
+      const sourcePath = new URL('../../src/typefx.ts', import.meta.url);
+      const source = await readFile(sourcePath, 'utf8');
+      const strippedSource = source.replace("import './typefx.css';\n", '');
+      const transpiled = ts.transpileModule(strippedSource, {
+        compilerOptions: {
+          module: ts.ModuleKind.ES2020,
+          target: ts.ScriptTarget.ES2019,
+        },
+      });
+      const moduleUrl = `data:text/javascript;base64,${Buffer.from(transpiled.outputText).toString('base64')}`;
+
+      return import(moduleUrl);
+    })();
   }
 
   return (await typefxModulePromise).default;

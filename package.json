@@ -14,7 +14,8 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "test": "node test/server.mjs",
+    "test": "node --test test/typefx.test.mjs",
+    "test:demo": "node test/server.mjs",
     "prepublishOnly": "pnpm run build"
   },
   "files": [
