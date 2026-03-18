@@ -14,6 +14,8 @@ type TypeFXOptions = {
   deleteAnimation?: AnimationOptions; // Custom delete animation
 };
 
+type Direction = -1 | 1;
+
 const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
 
 
@@ -81,29 +83,121 @@ export default class TypeFX {
     return Math.max(0, delay);
   }
 
+  private createContentNode(char: string): HTMLElement {
+    return char === '\n' ? document.createElement('br') : getTextElement(char);
+  }
+
+  private insertBeforeCaret(node: Node): void {
+    this.el.insertBefore(node, this.caret);
+  }
+
+  private getCaretSibling(direction: Direction): HTMLElement | null {
+    return (direction < 0 ? this.caret.previousElementSibling : this.caret.nextElementSibling) as HTMLElement | null;
+  }
+
+  private moveCaretBySibling(node: HTMLElement, direction: Direction): void {
+    this.el.insertBefore(this.caret, direction < 0 ? node : node.nextElementSibling);
+  }
+
+  private addSelection(node: HTMLElement): void {
+    node.classList.add('typefx-selected');
+    this.selectedList.add(node);
+  }
+
+  private clearSelection(): void {
+    for (const el of this.selectedList) {
+      if (el.parentNode === this.el) {
+        this.el.removeChild(el);
+      }
+    }
+    this.selectedList.clear();
+  }
+
+  private async insertText(text: string, instant: boolean): Promise<void> {
+    if (instant) {
+      const fragment = document.createDocumentFragment();
+
+      for (const ch of Array.from(text)) {
+        if (this.aborted) break;
+        fragment.append(this.createContentNode(ch));
+      }
+
+      this.insertBeforeCaret(fragment);
+      return;
+    }
+
+    for (const ch of Array.from(text)) {
+      if (this.aborted) break;
+
+      const node = this.createContentNode(ch);
+      this.insertBeforeCaret(node);
+
+      if (this.options.entryAnimation) {
+        const { keyframes, options } = this.options.entryAnimation;
+        node.animate(keyframes, options);
+      }
+
+      await sleep(this.getSpeedDelay());
+    }
+  }
+
+  private async deleteBeforeCaret(n: number, instant: boolean): Promise<void> {
+    if (this.selectedList.size > 0) {
+      this.clearSelection();
+
+      if (!instant) {
+        await sleep(this.getSpeedDelay());
+      }
+    }
+
+    while (n-- > 0) {
+      if (this.aborted) break;
+
+      const prev = this.getCaretSibling(-1);
+      if (!prev) break;
+
+      if (!instant && this.options.deleteAnimation) {
+        this.moveCaretBySibling(prev, -1);
+        const { keyframes, options } = this.options.deleteAnimation;
+        const animation = prev.animate(keyframes, options);
+        animation.finished.then(() => prev.remove());
+      } else {
+        this.el.removeChild(prev);
+      }
+
+      if (!instant) {
+        await sleep(this.getSpeedDelay());
+      }
+    }
+  }
+
+  private async traverseCaret(n: number, instant: boolean, select: boolean): Promise<void> {
+    const direction: Direction = n < 0 ? -1 : 1;
+    let remaining = Math.abs(n);
+
+    while (remaining-- > 0) {
+      if (this.aborted) break;
+
+      const sibling = this.getCaretSibling(direction);
+      if (!sibling) break;
+
+      this.moveCaretBySibling(sibling, direction);
+
+      if (select) {
+        this.addSelection(sibling);
+      }
+
+      if (!instant) {
+        await sleep(this.getSpeedDelay());
+      }
+    }
+  }
+
   /** Type: insert string character by character before the caret */
   type(text: string): this {
     return this.enqueue(async () => {
       this.caret.classList.remove('typefx-caret-blink');
-      for (const ch of Array.from(text)) {
-        if (this.aborted) break;
-
-        let node: HTMLElement;
-        if (ch === '\n') {
-          node = document.createElement('br');
-        } else {
-          node = getTextElement(ch);
-        }
-
-        this.el.insertBefore(node, this.caret);
-
-        if (this.options.entryAnimation) {
-          const { keyframes, options } = this.options.entryAnimation;
-          node.animate(keyframes, options);
-        }
-
-        await sleep(this.getSpeedDelay());
-      }
+      await this.insertText(text, false);
       this.caret.classList.add('typefx-caret-blink');
     });
   }
@@ -112,22 +206,7 @@ export default class TypeFX {
   quickType(text: string): this {
     return this.enqueue(async () => {
       this.caret.classList.remove('typefx-caret-blink');
-      const fragment = document.createDocumentFragment();
-
-      for (const ch of Array.from(text)) {
-        if (this.aborted) break;
-
-        let node: HTMLElement;
-        if (ch === '\n') {
-          node = document.createElement('br');
-        } else {
-          node = getTextElement(ch);
-        }
-
-        fragment.append(node);
-      }
-
-      this.el.insertBefore(fragment, this.caret);
+      await this.insertText(text, true);
       this.caret.classList.add('typefx-caret-blink');
     });
   }
@@ -141,34 +220,7 @@ export default class TypeFX {
   delete(n = 0): this {
     return this.enqueue(async () => {
       this.caret.classList.remove('typefx-caret-blink');
-
-
-      // If there is a selection, delete the selection first
-      if (this.selectedList.size > 0) {
-        for (const el of this.selectedList) {
-          this.el.removeChild(el);
-        }
-        this.selectedList.clear();
-        await sleep(this.getSpeedDelay());
-      }
-
-
-      while (n-- > 0) {
-        if (this.aborted) break;
-        // Find the last node before the caret
-        const prev = this.caret.previousElementSibling as ChildNode as HTMLElement | null;
-        if (!prev) break;
-
-        if (this.options.deleteAnimation) {
-          this.el.insertBefore(this.caret, prev);
-          const { keyframes, options } = this.options.deleteAnimation;
-          const animation = prev.animate(keyframes, options);
-          animation.finished.then(() => prev.remove());
-        } else {
-          this.el.removeChild(prev);
-        }
-        await sleep(this.getSpeedDelay());
-      }
+      await this.deleteBeforeCaret(n, false);
       this.caret.classList.add('typefx-caret-blink');
     });
   }
@@ -178,197 +230,53 @@ export default class TypeFX {
   quickDelete(n = 0): this {
     return this.enqueue(async () => {
       this.caret.classList.remove('typefx-caret-blink');
-
-
-      // If there is a selection, delete the selection first
-      if (this.selectedList.size > 0) {
-        for (const el of this.selectedList) {
-          this.el.removeChild(el);
-        }
-        this.selectedList.clear();
-      }
-
-
-      while (n-- > 0) {
-        if (this.aborted) break;
-        // Find the last node before the caret
-        const prev = this.caret.previousElementSibling as ChildNode | null;
-        if (!prev) break;
-        this.el.removeChild(prev);
-      }
+      await this.deleteBeforeCaret(n, true);
       this.caret.classList.add('typefx-caret-blink');
     });
   }
 
   /** Move caret n characters */
   move(n: number): this {
-    if (n < 0) {
-      return this.enqueue(async () => {
-        this.caret.classList.remove('typefx-caret-blink');
-        while (n++ < 0) {
-          if (this.aborted) break;
-          // Find the last node before the caret
-          const prev = this.caret.previousElementSibling as ChildNode as HTMLElement | null;
-          if (!prev) break;
-          this.el.insertBefore(this.caret, prev);
-          await sleep(this.getSpeedDelay());
-        }
-        this.caret.classList.add('typefx-caret-blink');
-      });
-    } else {
-      return this.enqueue(async () => {
-        this.caret.classList.remove('typefx-caret-blink');
-        while (n-- > 0) {
-          if (this.aborted) break;
-
-          const next = this.caret.nextElementSibling as ChildNode as HTMLElement | null;
-          if (!next) break;
-          this.el.insertBefore(this.caret, next.nextElementSibling);
-          await sleep(this.getSpeedDelay());
-        }
-        this.caret.classList.add('typefx-caret-blink');
-      });
-    }
-
+    return this.enqueue(async () => {
+      this.caret.classList.remove('typefx-caret-blink');
+      await this.traverseCaret(n, false, false);
+      this.caret.classList.add('typefx-caret-blink');
+    });
   }
 
   /** Quick move caret n characters */
   quickMove(n: number): this {
-    if (n < 0) {
-      return this.enqueue(async () => {
-        this.caret.classList.remove('typefx-caret-blink');
-
-        let prev: HTMLElement | null = this.caret;
-        let last: HTMLElement | null = prev;
-
-        while (n++ < 0) {
-          last = prev;
-          prev = prev.previousElementSibling as ChildNode as HTMLElement | null;
-          if (!prev) break;
-        }
-
-        this.el.insertBefore(this.caret, last);
-
-        this.caret.classList.add('typefx-caret-blink');
-
-        await sleep(this.getSpeedDelay());
-      });
-    } else {
-      return this.enqueue(async () => {
-        this.caret.classList.remove('typefx-caret-blink');
-
-        let next: HTMLElement | null = this.caret;
-        let last: HTMLElement | null = next;
-
-        while (n-- > 0) {
-          last = next;
-          next = next.nextElementSibling as ChildNode as HTMLElement | null;
-          if (!next) break;
-        }
-
-        this.el.insertBefore(this.caret, last.nextElementSibling);
-
-        this.caret.classList.add('typefx-caret-blink');
-
-
-        await sleep(this.getSpeedDelay());
-      });
-    }
-
+    return this.enqueue(async () => {
+      this.caret.classList.remove('typefx-caret-blink');
+      await this.traverseCaret(n, true, false);
+      this.caret.classList.add('typefx-caret-blink');
+      await sleep(this.getSpeedDelay());
+    });
   }
 
   /** Select n characters */
   select(n: number): this {
-    if (n < 0) {
-      return this.enqueue(async () => {
-        this.caret.classList.remove('typefx-caret-blink');
-        while (n++ < 0) {
-          if (this.aborted) break;
-          // Find the last node before the caret
-          const prev = this.caret.previousElementSibling as ChildNode as HTMLElement | null;
-          if (!prev) break;
-          this.el.insertBefore(this.caret, prev);
-
-          prev.classList.add("typefx-selected")
-          this.selectedList.add(prev);
-
-          await sleep(this.getSpeedDelay());
-        }
-        this.caret.classList.add('typefx-caret-blink');
-      });
-    } else {
-      return this.enqueue(async () => {
-        this.caret.classList.remove('typefx-caret-blink');
-        while (n-- > 0) {
-          if (this.aborted) break;
-
-          const next = this.caret.nextElementSibling as ChildNode as HTMLElement | null;
-          if (!next) break;
-          this.el.insertBefore(this.caret, next.nextElementSibling);
-
-          next.classList.add("typefx-selected")
-          this.selectedList.add(next);
-
-          await sleep(this.getSpeedDelay());
-        }
-        this.caret.classList.add('typefx-caret-blink');
-      });
-    }
-
-
+    return this.enqueue(async () => {
+      this.caret.classList.remove('typefx-caret-blink');
+      await this.traverseCaret(n, false, true);
+      this.caret.classList.add('typefx-caret-blink');
+    });
   }
 
 
   /** Quick select n characters */
   quickSelect(n: number): this {
-    if (n < 0) {
-      return this.enqueue(async () => {
-        this.caret.classList.remove('typefx-caret-blink');
-        let charEl: HTMLElement | null = this.caret.previousElementSibling as ChildNode as HTMLElement | null;
-        if (!charEl) return;
+    return this.enqueue(async () => {
+      this.caret.classList.remove('typefx-caret-blink');
 
-        while (n++ < 0) {
-          if (this.aborted) break;
+      const initialSibling = this.getCaretSibling(n < 0 ? -1 : 1);
+      if (!initialSibling) return;
 
+      await this.traverseCaret(n, true, true);
+      await sleep(this.getSpeedDelay());
 
-          charEl.classList.add("typefx-selected")
-          this.selectedList.add(charEl);
-
-          // Find the last node before the caret
-          charEl = charEl.previousElementSibling as ChildNode as HTMLElement | null;
-          if (!charEl) break;
-
-        }
-
-        this.el.insertBefore(this.caret, charEl);
-        await sleep(this.getSpeedDelay());
-
-        this.caret.classList.add('typefx-caret-blink');
-      });
-    } else {
-      return this.enqueue(async () => {
-        this.caret.classList.remove('typefx-caret-blink');
-        let charEl: HTMLElement | null = this.caret.nextElementSibling as ChildNode as HTMLElement | null;
-        if (!charEl) return;
-
-        while (n-- > 0) {
-          if (this.aborted) break;
-
-          charEl.classList.add("typefx-selected")
-          this.selectedList.add(charEl);
-
-          charEl = charEl.nextElementSibling as ChildNode as HTMLElement | null;
-          if (!charEl) break;
-
-        }
-
-        this.el.insertBefore(this.caret, charEl);
-        await sleep(this.getSpeedDelay());
-
-        this.caret.classList.add('typefx-caret-blink');
-      });
-    }
-
+      this.caret.classList.add('typefx-caret-blink');
+    });
   }
 
   /** Clear content */
@@ -383,10 +291,7 @@ export default class TypeFX {
       this.caret.classList.remove('typefx-caret-blink');
 
       if (this.selectedList.size > 0) {
-        for (const el of this.selectedList) {
-          this.el.removeChild(el);
-        }
-        this.selectedList.clear();
+        this.clearSelection();
       }
 
       while (this.caret.previousElementSibling) {
