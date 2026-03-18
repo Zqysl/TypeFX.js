@@ -72,8 +72,20 @@ export default class TypeFX {
   }
 
   /** Core: attach an async task to the end of the queue and return this for chaining */
+  private handleTaskError(error: unknown): void {
+    console.error('[TypeFX] Action failed and the queue continued.', error);
+  }
+
   private enqueue(task: () => Promise<void>): this {
-    this.q = this.q.then(() => (this.aborted ? Promise.resolve() : task()));
+    const nextTask = this.q.then(async () => {
+      if (this.aborted) return;
+      await task();
+    });
+
+    this.q = nextTask.catch((error) => {
+      this.handleTaskError(error);
+    });
+
     return this;
   }
 
