@@ -77,7 +77,8 @@ export default class TypeFX {
 
 
   private getSpeedDelay(): number {
-    return this.options.speed! + Math.floor(Math.random() * this.options.speedRange!) - (this.options.speedRange! / 2);
+    const delay = this.options.speed! + Math.floor(Math.random() * this.options.speedRange!) - (this.options.speedRange! / 2);
+    return Math.max(0, delay);
   }
 
   /** Type: insert string character by character before the caret */
