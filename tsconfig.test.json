@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "declaration": false,
+    "declarationMap": false,
+    "outDir": "test-dist",
+    "rootDir": ".",
+    "types": ["node"],
+    "lib": ["DOM", "ES2022"]
+  },
+  "include": ["src/global.d.ts", "test/**/*.ts"]
+}

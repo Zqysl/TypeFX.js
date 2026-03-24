@@ -15,7 +15,8 @@
   "scripts": {
     "build": "rollup -c",
     "test": "node --test test/typefx.test.mjs",
-    "test:demo": "node test/server.mjs",
+    "build:test": "tsc -p tsconfig.test.json",
+    "test:demo": "pnpm run build && pnpm run build:test && node test-dist/test/server.js",
     "prepublishOnly": "pnpm run build"
   },
   "files": [
@@ -36,6 +37,8 @@
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.0",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.5.2",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup": "^4.49.0",
     "typescript": "^5.9.2",
